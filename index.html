@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulado Front-end</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;line-height:1.5}
+  #app{max-width:640px;margin:0 auto;padding:20px 16px 48px}
+  .topo{display:flex;justify-content:space-between;font-size:14px;color:#94a3b8;margin-bottom:8px}
+  .barra{height:6px;background:#1e293b;border-radius:99px;overflow:hidden;margin-bottom:20px}
+  .barra div{height:100%;background:#38bdf8;transition:width .3s}
+  h1{font-size:26px;margin-bottom:8px}
+  h2{font-size:19px;font-weight:600;margin-bottom:18px}
+  .op{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:#1e293b;color:#e2e8f0;border:2px solid #334155;border-radius:12px;padding:14px;margin-bottom:10px;font-size:16px;font-family:inherit;cursor:pointer}
+  .op b{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:#334155;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .op:disabled{cursor:default}
+  .op.certa{border-color:#22c55e;background:#14532d}
+  .op.certa b{background:#22c55e}
+  .op.errada{border-color:#ef4444;background:#7f1d1d}
+  .op.errada b{background:#ef4444}
+  .exp{background:#1e293b;border-left:4px solid #38bdf8;border-radius:8px;padding:14px;margin:6px 0 16px;font-size:15px}
+  .btn{width:100%;background:#38bdf8;color:#0f172a;border:none;border-radius:12px;padding:16px;font-size:17px;font-weight:700;font-family:inherit;cursor:pointer}
+  .centro{text-align:center;padding-top:40px}
+  .nota{font-size:72px;font-weight:800;color:#38bdf8;margin:12px 0}
+  .info{color:#94a3b8;margin-top:10px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+const Q=[
+/* ===================== HTML ===================== */
+{t:"HTML",p:"Qual é a função da linha <!DOCTYPE html> no início do arquivo?",o:["Definir o título exibido na aba","Declarar que o documento segue as regras do HTML5","Incluir a folha de estilos CSS","Criar o elemento raiz do documento","Inserir metadados para buscadores"],c:1,e:"O DOCTYPE avisa ao navegador que a página é HTML5, evitando o modo de compatibilidade (quirks mode)."},
+{t:"HTML",p:"Qual é o elemento raiz de um documento HTML?",o:["<head>","<body>","<html>","<main>","<!DOCTYPE>"],c:2,e:"Tudo fica dentro do <html>, inclusive o <head> e o <body>."},
+{t:"HTML",p:"Qual tag define o título que aparece na aba do navegador?",o:["<h1>","<title>","<meta>","<head>","<header>"],c:1,e:"O <title> fica dentro do <head>; o <h1> é o título visível no corpo da página."},
+{t:"HTML",p:"Para que serve <meta charset='UTF-8'> dentro do <head>?",o:["Definir o título da página","Fazer acentos e caracteres especiais aparecerem corretamente","Vincular o arquivo CSS","Criar uma barra de navegação","Carregar o JavaScript"],c:1,e:"O UTF-8 garante que ç, ã, é etc. apareçam certos."},
+{t:"HTML",p:"Qual tag vem logo após o fechamento do <head> e contém todo o conteúdo visível da página?",o:["<h1>","<title>","<meta>","<body>","<footer>"],c:3,e:"O <body> guarda textos, imagens, listas, formulários e tudo o que aparece na tela."},
+{t:"HTML",p:"Qual é a função do atributo alt na tag <img>?",o:["Ajustar a altura da imagem","Especificar um texto alternativo, lido por leitores de tela ou exibido se a imagem não carregar","Definir o título que aparece ao passar o mouse","Definir a largura da imagem","Abrir a imagem em nova aba"],c:1,e:"alt é texto alternativo; o texto ao passar o mouse vem do title."},
+{t:"HTML",p:"Quais elementos criam um grupo de campos de formulário com uma legenda?",o:["<section> e <h1>","<main> e <header>","<fieldset> e <legend>","<div> e <span>","<form> e <label>"],c:2,e:"<fieldset> agrupa os campos e <legend> dá o título do grupo."},
+{t:"HTML",p:"Qual type de botão envia o formulário e seus dados?",o:["type='button'","type='reset'","type='submit'","type='text'","type='radio'"],c:2,e:"submit envia; reset limpa os campos; button não faz nada sozinho."},
+{t:"HTML",p:"Qual elemento semântico encapsula o conteúdo principal e exclusivo da página?",o:["<header>","<section>","<main>","<footer>","<aside>"],c:2,e:"<main> aparece uma vez e não inclui cabeçalho, rodapé nem barras laterais."},
+{t:"HTML",p:"Qual elemento semântico representa uma seção com links de navegação?",o:["<footer>","<nav>","<article>","<section>","<aside>"],c:1,e:"<nav> marca o menu e os links que levam a outras páginas ou áreas."},
+{t:"HTML",p:"Qual elemento define um conteúdo ao lado do principal, como barra lateral ou propagandas?",o:["<article>","<header>","<aside>","<footer>","<section>"],c:2,e:"<aside> é para conteúdo complementar, relacionado indiretamente ao principal."},
+{t:"HTML",p:"Qual elemento representa o rodapé, com direitos autorais ou links relacionados?",o:["<header>","<main>","<footer>","<section>","<nav>"],c:2,e:"<footer> é o rodapé da página ou de uma seção."},
+{t:"HTML",p:"Qual elemento representa um conteúdo independente, como um post ou uma notícia?",o:["<article>","<aside>","<div>","<span>","<nav>"],c:0,e:"<article> faz sentido sozinho, mesmo fora da página."},
+{t:"HTML",p:"Qual elemento e atributos vinculam uma folha de estilos CSS externa?",o:["<meta> com href","<title> com rel","<link> com rel e href","<a> com href","<html> com style"],c:2,e:"Exemplo: <link rel='stylesheet' href='css/estilos.css'> dentro do <head>."},
+{t:"HTML",p:"Qual o significado de rel='stylesheet' na tag <link>?",o:["Indica o caminho do arquivo CSS","Define a codificação de caracteres","Indica que o recurso vinculado é uma folha de estilos","Define o título da página","Ativa o JavaScript"],c:2,e:"rel descreve a relação; o caminho do arquivo fica no href."},
+{t:"HTML",p:"Qual afirmação melhor diferencia os atributos id e class?",o:["class é para um único elemento; id para vários","id identifica um único elemento; class aplica estilo a vários","Os dois devem ser únicos na página","id é obrigatório em todo elemento","id só funciona no CSS e class só no JS"],c:1,e:"id é único (links internos, JS); class se repete em vários elementos."},
+{t:"HTML",p:"Qual tag insere uma imagem na página?",o:["<img>","<image>","<pic>","<src>","<figure>"],c:0,e:"<img> usa src e alt; <figure> só agrupa imagem e legenda."},
+{t:"HTML",p:"Qual atributo da <img> indica o arquivo da imagem?",o:["href","src","alt","link","file"],c:1,e:"src aponta o arquivo; alt é o texto alternativo."},
+{t:"HTML",p:"Qual tag cria uma LINHA de tabela?",o:["<td>","<th>","<tr>","<table>","<row>"],c:2,e:"<tr> é a linha; <td> é a célula; <th> é a célula de cabeçalho."},
+{t:"HTML",p:"Qual atributo faz um link abrir em uma nova aba?",o:["target='_blank'","href='_new'","rel='tab'","open='new'","new-tab"],c:0,e:"target='_blank' abre o destino em outra aba."},
+{t:"HTML",p:"Qual tag cria uma caixa de texto com várias linhas?",o:["<input type='text'>","<textarea>","<text>","<p>","<field>"],c:1,e:"<textarea> aceita várias linhas; o input text aceita só uma."},
+{t:"HTML",p:"Qual tag cria uma lista suspensa de opções?",o:["<list>","<option>","<select>","<dropdown>","<datalist>"],c:2,e:"<select> é a lista; cada item dentro dela é uma <option>."},
+{t:"HTML",p:"Qual type de input permite escolher só UMA opção de um grupo?",o:["checkbox","radio","select","button","option"],c:1,e:"radio com o mesmo name = uma escolha; checkbox permite várias."},
+{t:"HTML",p:"Qual atributo mostra uma dica dentro do campo enquanto ele está vazio?",o:["value","title","placeholder","label","hint"],c:2,e:"placeholder some quando o usuário começa a digitar."},
+{t:"HTML",p:"Qual atributo do <form> define para onde os dados são enviados?",o:["method","action","target","href","send"],c:1,e:"action é o destino; method define GET ou POST."},
+{t:"HTML",p:"Qual tag indica texto de forte importância (negrito semântico)?",o:["<b>","<strong>","<em>","<bold>","<i>"],c:1,e:"<strong> tem significado; <b> é só visual; <em> é ênfase."},
+{t:"HTML",p:"Qual tag cria uma quebra de linha?",o:["<hr>","<lb>","<br>","<p>","<break>"],c:2,e:"<br> quebra a linha; <hr> desenha uma linha horizontal."},
+{t:"HTML",p:"Onde colocar o script para não atrasar a exibição do HTML?",o:["No início do <head>, sem atributos","No final do <body>","Antes do <!DOCTYPE>","Dentro do <title>","Dentro do <style>"],c:1,e:"No fim do body (ou com defer), o HTML aparece antes de o JS rodar."},
+{t:"HTML",p:"Qual tag representa o cabeçalho VISÍVEL de uma página ou seção?",o:["<head>","<header>","<top>","<h1>","<nav>"],c:1,e:"<header> aparece na tela; <head> guarda metadados invisíveis."},
+{t:"HTML",p:"Qual tag cria um rótulo associado a um campo de formulário?",o:["<legend>","<label>","<caption>","<title>","<span>"],c:1,e:"<label for='email'> se liga ao campo com id='email'."},
+{t:"HTML",p:"Qual tag cria uma lista NUMERADA?",o:["<ul>","<ol>","<li>","<dl>","<list>"],c:1,e:"<ol> é ordenada (numerada); <ul> usa marcadores; <li> é cada item."},
+{t:"HTML",p:"Qual tag cria um link clicável para outra página?",o:["<link>","<a>","<href>","<url>","<nav>"],c:1,e:"<a href='...'> é o link clicável; <link> vincula arquivos no <head>."},
+
+/* ===================== CSS ===================== */
+{t:"CSS",p:"Qual alternativa melhor define o CSS?",o:["Linguagem de programação para lógica e interatividade","Sistema de banco de dados","Linguagem de marcação que define a estrutura da página","Substituto do HTML para celulares","Linguagem de estilos que define a apresentação visual e separa o estilo do conteúdo"],c:4,e:"Estrutura é HTML, lógica é JavaScript e aparência é CSS."},
+{t:"CSS",p:"Um parágrafo e um botão têm class='texto'. Qual é o principal uso do seletor .texto?",o:["Navegação por links internos","Identificar um elemento único","Aplicar um estilo reutilizável a vários elementos","Criar um cabeçalho ou rodapé","Ter mais especificidade que um id"],c:2,e:"Classe serve para reaproveitar estilo; id é para um elemento único."},
+{t:"CSS",p:"Qual é a ordem do Modelo de Caixa, de DENTRO para FORA?",o:["Borda, padding, conteúdo, margin","Margin, borda, padding, conteúdo","Conteúdo, margin, borda, padding","Conteúdo, padding, borda, margin","Margin, conteúdo, padding, borda"],c:3,e:"Conteúdo, depois padding, depois borda e, por fora, margin."},
+{t:"CSS",p:"Qual é o propósito da propriedade padding?",o:["Criar espaço externo ao redor da borda","Definir a cor de fundo","Definir o espaço interno entre o conteúdo e a borda","Determinar largura e altura","Alinhar o texto ao centro"],c:2,e:"padding fica dentro da borda; margin fica fora."},
+{t:"CSS",p:"Qual é o propósito da propriedade margin?",o:["Definir a espessura da borda","Criar o espaço externo ao redor da borda, separando o elemento dos outros","Mudar a fonte do texto","Controlar o preenchimento interno","Redimensionar imagens"],c:1,e:"margin é a camada mais externa do modelo de caixa."},
+{t:"CSS",p:"Em margin: 10px 20px 5px 15px; qual é a ordem dos valores?",o:["Esquerda, direita, superior, inferior","Superior, inferior, esquerda, direita","Superior, direita, inferior, esquerda","Inferior, superior, direita, esquerda","Central, superior, inferior, lateral"],c:2,e:"Sentido horário a partir do topo: TRouBLe (Top, Right, Bottom, Left)."},
+{t:"CSS",p:"Qual é o efeito de width: 300px; e height: 200px; em uma div?",o:["Define a margin do elemento","Muda o tamanho da fonte","Define o tamanho da área de conteúdo: 300px por 200px","Faz o elemento virar inline","Define a distância entre conteúdo e borda"],c:2,e:"No padrão (content-box), width e height medem só o conteúdo."},
+{t:"CSS",p:"Qual propriedade aplica uma cor de fundo a um elemento?",o:["color","border-color","background-image","background-color","text-decoration"],c:3,e:"color muda o texto; background-image coloca imagem de fundo."},
+{t:"CSS",p:"Qual é o propósito das Media Queries?",o:["Criar variáveis globais de cor","Testar se o navegador suporta flex","Aplicar regras CSS só quando certas condições do dispositivo são atendidas","Incluir padding e borda no width","Controlar o carregamento de vídeos"],c:2,e:"Media queries são a base do design responsivo (largura, orientação etc.)."},
+{t:"CSS",p:"Qual característica é verdadeira para um elemento com display: block?",o:["Aceita width e height, mas não quebra a linha","Só pode conter elementos inline","Ocupa só a largura do conteúdo","Ocupa toda a largura disponível e aceita width e height","É removido do fluxo do documento"],c:3,e:"Block começa em nova linha e ocupa a largura toda."},
+{t:"CSS",p:"Ao aplicar display: flex em uma div, o que acontece com os filhos diretos?",o:["Viram block empilhados verticalmente","São posicionados de forma absoluta","Viram itens flexíveis, alinhados lado a lado por padrão","Têm as margens colapsadas e centralizadas","Viram inline e não aceitam width"],c:2,e:"O padrão do flex é flex-direction: row."},
+{t:"CSS",p:"Qual position deixa o elemento sempre visível no mesmo lugar, mesmo rolando a página?",o:["relative","absolute","sticky","fixed","static"],c:3,e:"fixed prende na tela; sticky só gruda depois de um ponto de rolagem."},
+{t:"CSS",p:"Qual seletor seleciona o elemento com id 'menu'?",o:[".menu","#menu","menu","*menu","@menu"],c:1,e:"# seleciona id; . seleciona classe; o nome puro seleciona a tag."},
+{t:"CSS",p:"Qual propriedade muda a cor do TEXTO?",o:["font-color","text-color","color","background-color","fill"],c:2,e:"color muda o texto; background-color muda o fundo."},
+{t:"CSS",p:"Com box-sizing: border-box, o width passa a incluir:",o:["Só o conteúdo","Conteúdo, padding e borda","Conteúdo e margin","Apenas a margin","Nada muda"],c:1,e:"border-box põe padding e borda dentro do width; a margin continua fora."},
+{t:"CSS",p:"No flexbox, qual propriedade alinha os itens no eixo PRINCIPAL?",o:["align-items","justify-content","flex-wrap","align-content","text-align"],c:1,e:"justify-content atua no eixo principal; align-items, no eixo cruzado."},
+{t:"CSS",p:"Qual valor de flex-direction empilha os itens na vertical?",o:["row","column","wrap","vertical","stack"],c:1,e:"column organiza em coluna; row (padrão) organiza lado a lado."},
+{t:"CSS",p:"Qual seletor tem a MAIOR especificidade?",o:["p","*",".texto","#titulo","div p"],c:3,e:"A ordem é id > classe > tag; o * não tem especificidade."},
+{t:"CSS",p:"Qual pseudo-classe aplica estilo quando o mouse passa sobre o elemento?",o:[":active",":focus",":hover",":visited","::before"],c:2,e:":hover é mouse em cima; :focus é selecionado; :active é no clique."},
+{t:"CSS",p:"Qual unidade é relativa à fonte do elemento raiz (html)?",o:["px","em","rem","%","vh"],c:2,e:"rem usa a fonte do html; em usa a do próprio elemento ou do pai."},
+{t:"CSS",p:"Qual é o display padrão de um <span>?",o:["block","inline","flex","none","grid"],c:1,e:"<span> é inline; <div> e <p> são block."},
+{t:"CSS",p:"Qual regra esconde o elemento E remove o espaço que ele ocupava?",o:["visibility: hidden","opacity: 0","display: none","position: fixed","z-index: -1"],c:2,e:"visibility: hidden e opacity: 0 escondem, mas mantêm o espaço."},
+{t:"CSS",p:"Qual propriedade define qual elemento fica por cima quando se sobrepõem?",o:["z-index","order","layer","top","float"],c:0,e:"z-index funciona em elementos com position diferente de static."},
+{t:"CSS",p:"Com @media (max-width: 600px), os estilos valem quando a tela tem:",o:["Mais de 600px","Até 600px","Exatamente 600px","Qualquer largura","Orientação paisagem"],c:1,e:"max-width = até aquele tamanho; min-width = a partir dele."},
+{t:"CSS",p:"Qual propriedade define o tamanho da fonte?",o:["font-size","text-size","font-weight","size","font-style"],c:0,e:"font-size é o tamanho; font-weight é a espessura."},
+{t:"CSS",p:"Como deixar um texto em negrito com CSS?",o:["font-style: bold","font-weight: bold","text-decoration: bold","font: strong","text-weight: bold"],c:1,e:"font-weight controla o negrito; font-style, o itálico."},
+{t:"CSS",p:"Qual propriedade arredonda os cantos de um elemento?",o:["border-style","corner","border-radius","round","radius"],c:2,e:"border-radius: 50% em um quadrado gera um círculo."},
+{t:"CSS",p:"Qual regra remove o sublinhado dos links?",o:["text-decoration: none","underline: none","link-style: none","font-style: normal","border: none"],c:0,e:"O sublinhado dos links vem do text-decoration."},
+{t:"CSS",p:"Qual regra centraliza o TEXTO horizontalmente?",o:["align-items: center","text-align: center","justify-content: center","margin: auto","vertical-align: middle"],c:1,e:"text-align alinha o conteúdo em linha, como o texto."},
+{t:"CSS",p:"Qual regra centraliza horizontalmente um bloco com largura definida?",o:["margin: 0 auto","text-align: center","padding: auto","float: center","position: center"],c:0,e:"margin auto nas laterais divide o espaço igualmente."},
+{t:"CSS",p:"No flexbox, qual regra deixa os itens quebrarem para a linha de baixo?",o:["flex-direction: column","flex-wrap: wrap","flex-flow: break","display: block","overflow: wrap"],c:1,e:"Por padrão é nowrap: os itens se espremem numa linha só."},
+{t:"CSS",p:"Qual propriedade define o espaço ENTRE os itens de um flex ou grid?",o:["margin","padding","gap","space","between"],c:2,e:"gap cria espaço só entre os itens, não nas bordas."},
+{t:"CSS",p:"Qual display cria um layout em linhas E colunas?",o:["flex","block","grid","table-cell","inline"],c:2,e:"grid trabalha em duas dimensões; flex, em uma."},
+{t:"CSS",p:"grid-template-columns: 1fr 1fr 1fr; cria quantas colunas?",o:["1","2","3","6","Depende do conteúdo"],c:2,e:"Cada 1fr é uma coluna com a mesma fração do espaço."},
+{t:"CSS",p:"Um elemento com position: absolute se posiciona em relação a:",o:["Sempre à página toda","Ao ancestral posicionado mais próximo","Ao irmão anterior","À própria posição original","Ao cursor do mouse"],c:1,e:"Se nenhum ancestral tiver position, ele usa a página."},
+{t:"CSS",p:"Qual unidade equivale a 1% da ALTURA da tela?",o:["vh","vw","%","em","rem"],c:0,e:"vh = altura da viewport; vw = largura."},
+{t:"CSS",p:"Qual propriedade define a família da fonte?",o:["font-family","font-type","typeface","font-style","text-font"],c:0,e:"Exemplo: font-family: Arial, sans-serif;"},
+{t:"CSS",p:"Qual é o display padrão de uma <div>?",o:["inline","block","flex","inline-block","grid"],c:1,e:"<div> é block: quebra a linha e ocupa toda a largura."},
+{t:"CSS",p:"Qual propriedade controla o conteúdo que ultrapassa a caixa?",o:["overflow","display","visibility","clip","wrap"],c:0,e:"overflow: hidden corta; overflow: auto cria rolagem."},
+{t:"CSS",p:"Qual position mantém o elemento no fluxo e permite deslocá-lo com top e left?",o:["static","relative","absolute","fixed","sticky"],c:1,e:"relative desloca a partir da posição original, sem sair do fluxo."},
+{t:"CSS",p:"Como se escreve um comentário em CSS?",o:["// comentário","\x3C!-- comentário -->","/* comentário */","# comentário","-- comentário"],c:2,e:"\x3C!-- --> é comentário do HTML; // existe só no JavaScript."},
+{t:"CSS",p:"Qual display deixa o elemento lado a lado E aceita width e height?",o:["inline","block","inline-block","none","static"],c:2,e:"inline-block junta o lado a lado do inline com as medidas do block."},
+{t:"CSS",p:"Qual é o valor PADRÃO da propriedade position?",o:["relative","absolute","fixed","static","sticky"],c:3,e:"static é o padrão: o elemento segue o fluxo normal, sem deslocamento."},
+
+/* ===================== JAVASCRIPT ===================== */
+{t:"JavaScript",p:"Qual é a sintaxe de um comentário de MÚLTIPLAS linhas em JavaScript?",o:["// Comentário","/* Comentário */","`` Comentário ``","** Comentário **","# Comentário"],c:1,e:"// é para uma linha só; # é comentário em Python."},
+{t:"JavaScript",p:"Qual tipo de dado representa a 'ausência de valor' intencional?",o:["Inteiro","String","Boolean","Null","Real"],c:3,e:"null indica de propósito que algo está vazio."},
+{t:"JavaScript",p:"Qual operador calcula o RESTO de uma divisão (módulo)?",o:["/","**","%","*","+"],c:2,e:"Exemplo: 10 % 3 resulta em 1."},
+{t:"JavaScript",p:"Qual operador de diferença leva em consideração o TIPO de dado?",o:["!=","==","===","!==","<="],c:3,e:"!== compara valor e tipo; != compara só o valor."},
+{t:"JavaScript",p:"O que a expressão 4 === '4' retorna e por quê?",o:["true, porque o valor é o mesmo","true, porque o tipo é convertido antes","false, porque === compara apenas o valor","false, porque === exige que valor e tipo sejam idênticos","true, porque números e strings numéricas são iguais"],c:3,e:"4 é number e '4' é string; já 4 == '4' daria true."},
+{t:"JavaScript",p:"Em console.log('Mc Donald’s ' + 'Faça o seu mequi'), qual operador faz a concatenação?",o:["/","+","&","*","-"],c:1,e:"Em JS, o + junta textos; & é operador bit a bit."},
+{t:"JavaScript",p:"var idade = 7; var Idade = 25; O que esse exemplo demonstra?",o:["Variáveis devem começar com maiúscula","JavaScript é case sensitive: idade e Idade são variáveis distintas","A redeclaração de variáveis é proibida","Só variáveis com var são case sensitive","Números não podem aparecer em nomes de variáveis"],c:1,e:"Maiúsculas e minúsculas fazem diferença em todo o JavaScript."},
+{t:"JavaScript",p:"A linha meuValor -= 2; é a forma abreviada de qual operação?",o:["meuValor = 2 - meuValor;","meuValor = meuValor - 2;","meuValor = meuValor / 2;","meuValor = meuValor * 2;","meuValor = meuValor + 2;"],c:1,e:"-= tira 2 do valor atual e guarda na mesma variável."},
+{t:"JavaScript",p:"O que a linha meuValor++ faz com a variável?",o:["Subtrai 1","Multiplica por 2","Adiciona 1","Divide por 2","Eleva à potência de 2"],c:2,e:"++ incrementa; -- decrementa."},
+{t:"JavaScript",p:"Qual é a principal diferença entre declarar com var e com let?",o:["var é para números; let é para strings","let permite redeclarar; var não","var não permite redeclarar; let permite","let não permite redeclarar no mesmo escopo; var permite","var é local e let é global"],c:3,e:"let y = 1; let y = 2; gera erro. Com var funciona."},
+{t:"JavaScript",p:"const X = 5; X = 7; O que acontece?",o:["X passa a valer 7","7 é atribuído, mas só o primeiro log mostra 5","Roda sem erro e X continua 5","Ocorre TypeError, pois const impede reatribuição","X é ignorada e 7 vai para uma nova variável"],c:3,e:"Erro: Assignment to constant variable. O código para ali."},
+{t:"JavaScript",p:"Uma variável declarada com var dentro de um if pode ser acessada fora dele. Por quê?",o:["var tem escopo de bloco","var tem escopo de função (ou global), não de bloco","let e const são globais","Só constantes têm escopo de bloco","var só funciona dentro de if"],c:1,e:"let e const ficam presos ao bloco { }; var não."},
+{t:"JavaScript",p:"Qual é a estrutura do operador ternário?",o:["switch","if...else","? :","&&","||"],c:2,e:"condição ? valorSeVerdadeiro : valorSeFalso"},
+{t:"JavaScript",p:"No switch-case, qual palavra-chave impede que a execução continue para o próximo case?",o:["default","case","continue","break","return"],c:3,e:"Sem break acontece o fall-through: os cases seguintes também rodam."},
+{t:"JavaScript",p:"Em for (var i in myArray), o que i representa a cada iteração?",o:["O valor do elemento","O índice (posição) do elemento","O tamanho do array","O último elemento","O tipo do elemento"],c:1,e:"for...in percorre índices; para valores use for...of."},
+{t:"JavaScript",p:"Qual é a principal diferença entre while e do-while?",o:["while executa só uma vez","do-while executa o bloco pelo menos uma vez, antes de testar a condição","while testa no final e do-while no início","do-while é só para strings","São idênticos"],c:1,e:"while testa antes; do-while testa depois da primeira execução."},
+{t:"JavaScript",p:"function sum(n1,n2){ console.log(n1+n2); } sum(4,17); O que aparece no console?",o:["15","undefined","21","function","417"],c:2,e:"Os dois são números, então 4 + 17 = 21."},
+{t:"JavaScript",p:"function sum(n1,n2){ return n1+n2; } soma = sum(4,7); Quanto vale soma?",o:["'4,7'","'47'","11","undefined","NaN"],c:2,e:"O return devolve 11, que fica guardado em soma."},
+{t:"JavaScript",p:"Qual é o resultado de typeof 'texto'?",o:["'text'","'string'","'object'","'char'","'undefined'"],c:1,e:"Texto entre aspas é do tipo string."},
+{t:"JavaScript",p:"Qual é o resultado de '5' + 3?",o:["8","'53'","NaN","Erro","15"],c:1,e:"Se um dos lados é string, o + concatena."},
+{t:"JavaScript",p:"Qual é o resultado de '5' - 3?",o:["2","'53'","NaN","Erro","'2'"],c:0,e:"O - converte a string em número."},
+{t:"JavaScript",p:"Qual método adiciona um item no FINAL de um array?",o:["shift()","unshift()","pop()","push()","slice()"],c:3,e:"push adiciona no fim; pop remove do fim."},
+{t:"JavaScript",p:"Qual propriedade retorna a quantidade de itens de um array?",o:["size","count","length","total","index"],c:2,e:"array.length informa quantos itens existem."},
+{t:"JavaScript",p:"Quantas vezes executa: for (let i = 0; i < 5; i++)?",o:["4","5","6","Infinitas","0"],c:1,e:"i vale 0, 1, 2, 3 e 4: cinco vezes."},
+{t:"JavaScript",p:"Qual é o resultado de true && false?",o:["true","false","null","undefined","Erro"],c:1,e:"&& só dá true se os dois lados forem true."},
+{t:"JavaScript",p:"Uma variável declarada sem valor (let x;) vale:",o:["null","0","''","undefined","false"],c:3,e:"undefined = nunca recebeu valor; null = vazio de propósito."},
+{t:"JavaScript",p:"Qual é o valor de x depois de: let x = 10; x += 5;",o:["5","10","15","105","50"],c:2,e:"x += 5 é o mesmo que x = x + 5."},
+{t:"JavaScript",p:"Qual palavra-chave devolve um valor de dentro de uma função?",o:["break","return","yield","exit","output"],c:1,e:"return encerra a função e devolve o valor."},
+{t:"JavaScript",p:"Qual é o resultado de: 10 > 5 ? 'sim' : 'não'",o:["'sim'","'não'","true","false","Erro"],c:0,e:"A condição é verdadeira, então vem o primeiro valor."},
+{t:"JavaScript",p:"Qual laço percorre diretamente os VALORES de um array?",o:["for...in","for...of","while","do...while","switch"],c:1,e:"for...of percorre valores; for...in percorre índices."},
+{t:"JavaScript",p:"Qual palavra-chave declara uma variável que não pode ser reatribuída?",o:["var","let","const","static","fixed"],c:2,e:"Reatribuir uma const gera TypeError."},
+{t:"JavaScript",p:"Qual é o resultado de 7 % 2?",o:["3","3.5","1","0","14"],c:2,e:"7 dividido por 2 sobra 1."},
+{t:"JavaScript",p:"Qual é o resultado de 2 ** 3?",o:["6","8","9","5","23"],c:1,e:"** é potência: 2 × 2 × 2 = 8."},
+{t:"JavaScript",p:"Qual é o resultado de 5 == '5'?",o:["true","false","undefined","Erro","NaN"],c:0,e:"== converte o tipo antes de comparar; === daria false."},
+{t:"JavaScript",p:"Qual é o resultado de !true?",o:["true","false","null","0","Erro"],c:1,e:"! inverte o valor lógico."},
+{t:"JavaScript",p:"Qual é o resultado de false || true?",o:["true","false","null","undefined","Erro"],c:0,e:"|| dá true se pelo menos um lado for true."},
+{t:"JavaScript",p:"Qual função mostra uma mensagem em pop-up no navegador?",o:["console.log()","alert()","print()","prompt.show()","window.msg()"],c:1,e:"alert avisa; prompt pede um valor; confirm pede OK ou Cancelar."},
+{t:"JavaScript",p:"Qual função converte o texto '42' no número inteiro 42?",o:["parseInt('42')","toString('42')","Number.text('42')","int('42')","String('42')"],c:0,e:"parseInt converte para inteiro; Number() também funciona."},
+{t:"JavaScript",p:"Qual é o índice do primeiro item de um array?",o:["1","0","-1","first","Depende do array"],c:1,e:"Os índices começam em 0."},
+{t:"JavaScript",p:"let frutas = ['maçã','uva','pera']; quanto vale frutas[2]?",o:["'maçã'","'uva'","'pera'","undefined","Erro"],c:2,e:"Índice 0 = maçã, 1 = uva, 2 = pera."},
+{t:"JavaScript",p:"Qual método remove o ÚLTIMO item de um array?",o:["shift()","pop()","push()","splice()","delete()"],c:1,e:"pop remove do fim; shift remove do início."},
+{t:"JavaScript",p:"Qual método executa uma função para cada item do array?",o:["forEach()","each()","loop()","repeat()","forAll()"],c:0,e:"Exemplo: lista.forEach(item => console.log(item));"},
+{t:"JavaScript",p:"Qual método cria um novo array só com os itens que passam num teste?",o:["map()","filter()","find()","reduce()","sort()"],c:1,e:"filter filtra; map transforma; find devolve só o primeiro."},
+{t:"JavaScript",p:"Qual arrow function soma dois números corretamente?",o:["const soma = (a, b) => a + b;","const soma = a, b -> a + b;","function => soma(a, b)","const soma = (a, b) <= a + b;","arrow soma(a, b) { a + b }"],c:0,e:"Com uma expressão só, a arrow function retorna o valor direto."},
+{t:"JavaScript",p:"Qual é o resultado de typeof 42?",o:["'integer'","'number'","'float'","'numeric'","'int'"],c:1,e:"Em JS, inteiros e decimais são todos number."},
+{t:"JavaScript",p:"Qual é o resultado de typeof [1, 2, 3]?",o:["'array'","'list'","'object'","'number'","'undefined'"],c:2,e:"Arrays são objetos; para testar use Array.isArray()."},
+{t:"JavaScript",p:"Imprimir o resultado de uma função SEM return mostra:",o:["0","null","undefined","Um erro","O nome da função"],c:2,e:"Sem return, a função devolve undefined."},
+{t:"JavaScript",p:"Qual estrutura testa vários valores possíveis de uma mesma variável?",o:["if","for","switch","while","try"],c:2,e:"switch compara a variável com cada case."},
+
+/* ===================== DOM ===================== */
+{t:"DOM",p:"Qual comando seleciona um elemento único pelo valor do atributo id?",o:["document.getElementsByClassName()","document.getElementsByTagName()","document.getElementById()","document.getElementsByName()","document.querySelectorAll()"],c:2,e:"getElementById está no singular: devolve um só elemento."},
+{t:"DOM",p:"Qual propriedade modifica o conteúdo HTML interno de um elemento?",o:["document.innerHTML","element.innerContent","element.innerText","element.innerHTML","element.textContent"],c:3,e:"innerHTML interpreta as tags; innerText e textContent só mexem com texto."},
+{t:"DOM",p:"Qual comando seleciona uma coleção de elementos pelo atributo class?",o:["document.getElementById()","document.getElementsByClassName()","document.getElementsByTagName()","document.getElementsByName()","document.querySelector()"],c:1,e:"Devolve todos os elementos que têm aquela classe."},
+{t:"DOM",p:"Para alterar o SEGUNDO elemento de getElementsByClassName('lista'), qual índice usar?",o:["[0]","[1]","[2]","[lista]","[primeiro]"],c:1,e:"A contagem começa em 0, então o segundo é o [1]."},
+{t:"DOM",p:"Qual comando seleciona todos os elementos com a mesma tag (button, div...)?",o:["document.getElementById()","document.getElementsByClassName()","document.getElementsByTagName()","document.getElementsByName()","document.querySelector()"],c:2,e:"Exemplo: getElementsByTagName('button')."},
+{t:"DOM",p:"Qual comando seleciona elementos pelo atributo name (comum em formulários)?",o:["document.getElementById()","document.getElementsByClassName()","document.getElementsByTagName()","document.getElementsByName()","document.querySelectorAll()"],c:3,e:"Muito usado com radio buttons do mesmo grupo."},
+{t:"DOM",p:"Como adicionar um evento de clique a um botão?",o:["botao.onClick()","botao.addEventListener('click', fn)","botao.click = fn()","botao.event('click')","botao.listen('click')"],c:1,e:"addEventListener recebe o nome do evento e a função."},
+{t:"DOM",p:"Qual método seleciona TODOS os elementos que batem com um seletor CSS?",o:["querySelector()","getElementById()","querySelectorAll()","getElement()","selectAll()"],c:2,e:"querySelectorAll devolve todos; querySelector, só o primeiro."},
+{t:"DOM",p:"Qual propriedade permite adicionar ou remover classes de um elemento?",o:["className.add","classList","styleList","classes","setClass"],c:1,e:"Use el.classList.add(), .remove() ou .toggle()."},
+{t:"DOM",p:"Como mudar a cor de fundo de um elemento via JavaScript?",o:["el.style.backgroundColor = 'red'","el.style.background-color = 'red'","el.css('background', 'red')","el.color = 'red'","el.background = 'red'"],c:0,e:"No JS, propriedades CSS com hífen viram camelCase."},
+{t:"DOM",p:"Qual propriedade lê o texto digitado em um input?",o:["innerHTML","text","value","content","innerText"],c:2,e:"Campos de formulário guardam o que foi digitado em .value."},
+{t:"DOM",p:"Qual propriedade troca só o TEXTO de um elemento, sem interpretar tags?",o:["innerHTML","textContent","value","outerHTML","html"],c:1,e:"textContent mostra as tags como texto; innerHTML as interpreta."},
+{t:"DOM",p:"Qual método cria um novo elemento HTML pelo JavaScript?",o:["document.newElement()","document.createElement()","document.addElement()","document.makeTag()","document.append()"],c:1,e:"Depois de criado, ele precisa ser inserido na página."},
+{t:"DOM",p:"Qual método insere um elemento como último filho de outro?",o:["appendChild()","insertFirst()","addChild()","push()","attach()"],c:0,e:"pai.appendChild(filho) coloca o filho no fim."},
+{t:"DOM",p:"Qual evento dispara quando um formulário é enviado?",o:["click","change","submit","send","load"],c:2,e:"O submit é escutado no form, não no botão."},
+{t:"DOM",p:"Qual comando impede o formulário de recarregar a página ao enviar?",o:["event.stop()","event.preventDefault()","return null","form.cancel()","event.block()"],c:1,e:"preventDefault cancela o comportamento padrão do evento."},
+{t:"DOM",p:"O que document.querySelector('.item') retorna?",o:["Todos os elementos com a classe item","O primeiro elemento com a classe item","O elemento com id item","Um array vazio","A quantidade de itens"],c:1,e:"Para pegar todos, use querySelectorAll."},
+{t:"DOM",p:"Qual método liga/desliga uma classe a cada chamada?",o:["classList.switch()","classList.toggle()","classList.change()","classList.flip()","className.toggle()"],c:1,e:"toggle adiciona se não tiver e remove se já tiver."}
+];
+
+const POR_RODADA=20;
+const app=document.getElementById("app");
+let fila=[],lista,i,acertos,rodada=0;
+
+function embaralhar(a){for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a}
+function el(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e}
+
+function inicio(){
+  app.innerHTML="";
+  const c=el("div","centro");
+  c.append(
+    el("h1","","Simulado Front-end"),
+    el("p","info","HTML · CSS · JavaScript · DOM"),
+    el("p","info",Q.length+" questões no banco, em rodadas de "+POR_RODADA+"."),
+    el("p","info","Marque a resposta, veja se acertou e passe para a próxima. No fim de cada rodada aparece a sua nota.")
+  );
+  const b=el("button","btn","Começar");b.style.marginTop="28px";b.onclick=iniciar;
+  c.append(b);app.append(c);
+}
+
+function iniciar(){
+  if(fila.length<POR_RODADA) fila=fila.concat(embaralhar(Q.filter(q=>!fila.includes(q))));
+  rodada++;
+  lista=fila.splice(0,POR_RODADA).map(q=>({...q,ops:embaralhar(q.o.map((t,k)=>({t,ok:k===q.c})))}));
+  i=0;acertos=0;mostrar();
+}
+
+function mostrar(){
+  const q=lista[i];app.innerHTML="";
+  const topo=el("div","topo");
+  topo.append(el("span","","Rodada "+rodada+" · "+q.t),el("span","",(i+1)+" / "+lista.length));
+  const barra=el("div","barra");const p=el("div");p.style.width=(i/lista.length*100)+"%";barra.append(p);
+  app.append(topo,barra,el("h2","",q.p));
+  const botoes=q.ops.map((op,k)=>{
+    const b=el("button","op");b.append(el("b","","ABCDE"[k]),el("span","",op.t));
+    b.onclick=()=>responder(b,op,botoes,q);app.append(b);return b;
+  });
+  window.scrollTo(0,0);
+}
+
+function responder(b,op,botoes,q){
+  botoes.forEach((x,k)=>{x.disabled=true;if(q.ops[k].ok)x.classList.add("certa")});
+  if(op.ok)acertos++;else b.classList.add("errada");
+  app.append(el("div","exp",(op.ok?"✅ Acertou! ":"❌ Errou. ")+q.e));
+  const prox=el("button","btn",i<lista.length-1?"Próxima":"Ver nota da rodada");
+  prox.onclick=()=>{i++;i<lista.length?mostrar():fim()};
+  app.append(prox);prox.scrollIntoView({behavior:"smooth"});
+}
+
+function fim(){
+  const nota=(acertos/lista.length*10).toFixed(1).replace(".",",");
+  app.innerHTML="";const c=el("div","centro");
+  c.append(
+    el("h1","","Fim da rodada "+rodada),
+    el("div","nota",nota),
+    el("p","","Você acertou "+acertos+" de "+lista.length+" questões."),
+    el("p","info",fila.length>0?"Ainda faltam "+fila.length+" questões inéditas no banco.":"Você viu todas as questões! A próxima rodada embaralha tudo de novo.")
+  );
+  const r=el("button","btn","Próxima rodada");r.style.marginTop="24px";r.onclick=iniciar;
+  c.append(r);app.append(c);window.scrollTo(0,0);
+}
+
+inicio();
+</script>
+</body>
+</html>
