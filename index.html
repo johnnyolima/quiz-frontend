@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulado Front-end</title>
+<title>Simulado Front-end · Prova</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;line-height:1.5}
@@ -25,6 +25,22 @@
   .centro{text-align:center;padding-top:40px}
   .nota{font-size:72px;font-weight:800;color:#38bdf8;margin:12px 0}
   .info{color:#94a3b8;margin-top:10px}
+  .op.marcada{border-color:#38bdf8;background:#0c4a6e}
+  .op.marcada b{background:#38bdf8;color:#0f172a}
+  .btn:disabled{opacity:.4;cursor:default}
+  .btn.sec{background:#1e293b;color:#e2e8f0;border:2px solid #334155}
+  .nav{display:flex;gap:10px;margin-top:8px}
+  .mapa{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+  .num{width:36px;height:36px;border-radius:8px;border:2px solid #334155;background:#1e293b;color:#94a3b8;font-weight:700;font-family:inherit;cursor:pointer}
+  .num.resp{background:#0c4a6e;color:#e2e8f0;border-color:#0c4a6e}
+  .num.atual{border-color:#38bdf8}
+  .gab{margin-top:40px}
+  .rev{background:#111c33;border:2px solid #334155;border-radius:12px;padding:14px;margin-bottom:14px}
+  .rev.ok{border-color:#166534}.rev.no{border-color:#991b1b}
+  .rt{font-size:14px;color:#94a3b8;margin-bottom:6px}
+  .rp{font-weight:600;margin-bottom:10px}
+  .ro{padding:8px 10px;border-radius:8px;margin-bottom:6px;background:#1e293b;font-size:15px}
+  .ro.certa{background:#14532d}.ro.errada{background:#7f1d1d}
 </style>
 </head>
 <body>
@@ -194,12 +210,14 @@ const Q=[
 {t:"DOM",p:"Qual método liga/desliga uma classe a cada chamada?",o:["classList.switch()","classList.toggle()","classList.change()","classList.flip()","className.toggle()"],c:1,e:"toggle adiciona se não tiver e remove se já tiver."}
 ];
 
-const POR_RODADA=20;
+const POR_PROVA=14, VALOR=100;
 const app=document.getElementById("app");
-let fila=[],lista,i,acertos,rodada=0;
+let fila=[],lista,i,resp,prova=0;
 
 function embaralhar(a){for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a}
 function el(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e}
+function fmt(n){return (Math.round(n*100)/100).toString().replace(".",",")}
+const PTS=VALOR/POR_PROVA;
 
 function inicio(){
   app.innerHTML="";
@@ -207,53 +225,92 @@ function inicio(){
   c.append(
     el("h1","","Simulado Front-end"),
     el("p","info","HTML · CSS · JavaScript · DOM"),
-    el("p","info",Q.length+" questões no banco, em rodadas de "+POR_RODADA+"."),
-    el("p","info","Marque a resposta, veja se acertou e passe para a próxima. No fim de cada rodada aparece a sua nota.")
+    el("p","info","Formato da prova: "+POR_PROVA+" questões, valendo "+VALOR+" pontos ("+fmt(PTS)+" pts cada)."),
+    el("p","info","Responda todas, pode voltar e trocar respostas. O gabarito só aparece depois de entregar."),
+    el("p","info",Q.length+" questões no banco; cada prova sorteia questões inéditas até acabar o banco.")
   );
-  const b=el("button","btn","Começar");b.style.marginTop="28px";b.onclick=iniciar;
+  const b=el("button","btn","Começar prova");b.style.marginTop="28px";b.onclick=iniciar;
   c.append(b);app.append(c);
 }
 
 function iniciar(){
-  if(fila.length<POR_RODADA) fila=fila.concat(embaralhar(Q.filter(q=>!fila.includes(q))));
-  rodada++;
-  lista=fila.splice(0,POR_RODADA).map(q=>({...q,ops:embaralhar(q.o.map((t,k)=>({t,ok:k===q.c})))}));
-  i=0;acertos=0;mostrar();
+  if(fila.length<POR_PROVA) fila=fila.concat(embaralhar(Q.filter(q=>!fila.includes(q))));
+  prova++;
+  lista=fila.splice(0,POR_PROVA).map(q=>({...q,ops:embaralhar(q.o.map((t,k)=>({t,ok:k===q.c})))}));
+  resp=new Array(lista.length).fill(null);
+  i=0;mostrar();
+}
+
+function mapa(){
+  const m=el("div","mapa");
+  lista.forEach((_,k)=>{
+    const b=el("button","num"+(resp[k]!==null?" resp":"")+(k===i?" atual":""),String(k+1));
+    b.onclick=()=>{i=k;mostrar()};m.append(b);
+  });
+  return m;
 }
 
 function mostrar(){
   const q=lista[i];app.innerHTML="";
+  const feitas=resp.filter(r=>r!==null).length;
   const topo=el("div","topo");
-  topo.append(el("span","","Rodada "+rodada+" · "+q.t),el("span","",(i+1)+" / "+lista.length));
-  const barra=el("div","barra");const p=el("div");p.style.width=(i/lista.length*100)+"%";barra.append(p);
-  app.append(topo,barra,el("h2","",q.p));
-  const botoes=q.ops.map((op,k)=>{
-    const b=el("button","op");b.append(el("b","","ABCDE"[k]),el("span","",op.t));
-    b.onclick=()=>responder(b,op,botoes,q);app.append(b);return b;
+  topo.append(el("span","","Prova "+prova+" · "+q.t+" · "+fmt(PTS)+" pts"),el("span","",feitas+" / "+lista.length+" respondidas"));
+  const barra=el("div","barra");const p=el("div");p.style.width=(feitas/lista.length*100)+"%";barra.append(p);
+  app.append(topo,barra,mapa(),el("h2","","Questão "+(i+1)+". "+q.p));
+  q.ops.forEach((op,k)=>{
+    const b=el("button","op"+(resp[i]===k?" marcada":""));b.append(el("b","","ABCDE"[k]),el("span","",op.t));
+    b.onclick=()=>{resp[i]=k;mostrar()};app.append(b);
   });
+  const nav=el("div","nav");
+  const ant=el("button","btn sec","Anterior");ant.disabled=i===0;ant.onclick=()=>{i--;mostrar()};
+  const ult=i===lista.length-1;
+  const prox=el("button","btn",ult?"Entregar prova":"Próxima");
+  prox.onclick=()=>{ult?confirmar():(i++,mostrar())};
+  nav.append(ant,prox);app.append(nav);
+  if(!ult){const ent=el("button","btn sec","Entregar prova");ent.style.marginTop="10px";ent.onclick=confirmar;app.append(ent)}
   window.scrollTo(0,0);
 }
 
-function responder(b,op,botoes,q){
-  botoes.forEach((x,k)=>{x.disabled=true;if(q.ops[k].ok)x.classList.add("certa")});
-  if(op.ok)acertos++;else b.classList.add("errada");
-  app.append(el("div","exp",(op.ok?"✅ Acertou! ":"❌ Errou. ")+q.e));
-  const prox=el("button","btn",i<lista.length-1?"Próxima":"Ver nota da rodada");
-  prox.onclick=()=>{i++;i<lista.length?mostrar():fim()};
-  app.append(prox);prox.scrollIntoView({behavior:"smooth"});
+function confirmar(){
+  const falta=resp.map((r,k)=>r===null?k+1:null).filter(x=>x);
+  if(!falta.length)return corrigir();
+  app.innerHTML="";const c=el("div","centro");
+  c.append(el("h1","","Entregar a prova?"),
+    el("p","","Você deixou "+falta.length+" questão(ões) em branco: "+falta.join(", ")+"."),
+    el("p","info","Questões em branco valem zero."));
+  const v=el("button","btn","Voltar e responder");v.style.marginTop="24px";v.onclick=()=>{i=falta[0]-1;mostrar()};
+  const e=el("button","btn sec","Entregar mesmo assim");e.style.marginTop="10px";e.onclick=corrigir;
+  c.append(v,e);app.append(c);window.scrollTo(0,0);
 }
 
-function fim(){
-  const nota=(acertos/lista.length*10).toFixed(1).replace(".",",");
+function corrigir(){
+  const acertos=lista.filter((q,k)=>resp[k]!==null&&q.ops[resp[k]].ok).length;
+  const nota=acertos*PTS;
   app.innerHTML="";const c=el("div","centro");
   c.append(
-    el("h1","","Fim da rodada "+rodada),
-    el("div","nota",nota),
-    el("p","","Você acertou "+acertos+" de "+lista.length+" questões."),
-    el("p","info",fila.length>0?"Ainda faltam "+fila.length+" questões inéditas no banco.":"Você viu todas as questões! A próxima rodada embaralha tudo de novo.")
+    el("h1","","Resultado da prova "+prova),
+    el("div","nota",fmt(nota)),
+    el("p","","de "+VALOR+" pontos · "+acertos+" de "+lista.length+" questões certas"),
+    el("p","info",fila.length>0?"Ainda faltam "+fila.length+" questões inéditas no banco.":"Você viu todas as questões! A próxima prova embaralha tudo de novo.")
   );
-  const r=el("button","btn","Próxima rodada");r.style.marginTop="24px";r.onclick=iniciar;
-  c.append(r);app.append(c);window.scrollTo(0,0);
+  const r=el("button","btn","Nova prova");r.style.marginTop="24px";r.onclick=iniciar;
+  c.append(r);app.append(c);
+  app.append(el("h2","gab","Gabarito comentado"));
+  lista.forEach((q,k)=>{
+    const ok=resp[k]!==null&&q.ops[resp[k]].ok;
+    const box=el("div","rev "+(ok?"ok":"no"));
+    box.append(el("p","rt",(ok?"✅ ":"❌ ")+"Questão "+(k+1)+" · "+q.t+" · "+(ok?"+"+fmt(PTS):"0")+" pts"));
+    box.append(el("p","rp",q.p));
+    q.ops.forEach((op,j)=>{
+      const cls="ro"+(op.ok?" certa":"")+(resp[k]===j&&!op.ok?" errada":"");
+      box.append(el("div",cls,"ABCDE"[j]+") "+op.t+(resp[k]===j?"  ← sua resposta":"")));
+    });
+    if(resp[k]===null)box.append(el("p","info","Deixou em branco."));
+    box.append(el("div","exp",q.e));
+    app.append(box);
+  });
+  const r2=el("button","btn","Nova prova");r2.onclick=iniciar;app.append(r2);
+  window.scrollTo(0,0);
 }
 
 inicio();
